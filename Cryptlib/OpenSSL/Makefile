@@ -103,6 +103,7 @@ OBJS		= crypto/cryptlib.o \
 		  crypto/modes/ccm128.o \
 		  crypto/modes/xts128.o \
 		  crypto/modes/wrap128.o \
+		  crypto/modes/ocb128.o \
 		  crypto/bn/bn_add.o \
 		  crypto/bn/bn_div.o \
 		  crypto/bn/bn_exp.o \
@@ -131,6 +132,10 @@ OBJS		= crypto/cryptlib.o \
 		  crypto/bn/bn_depr.o \
 		  crypto/bn/bn_x931p.o \
 		  crypto/bn/bn_const.o \
+		  crypto/bn/bn_dh.o \
+		  crypto/bn/bn_intern.o \
+		  crypto/bn/bn_srp.o \
+		  crypto/bn/rsaz_exp.o \
 		  crypto/rsa/rsa_eay.o \
 		  crypto/rsa/rsa_gen.o \
 		  crypto/rsa/rsa_lib.o \
@@ -151,6 +156,10 @@ OBJS		= crypto/cryptlib.o \
 		  crypto/rsa/rsa_prn.o \
 		  crypto/rsa/rsa_pmeth.o \
 		  crypto/rsa/rsa_crpt.o \
+		  crypto/rsa/rsa_meth.o \
+		  crypto/rsa/rsa_mp.o \
+		  crypto/rsa/rsa_ossl.o \
+		  crypto/rsa/rsa_x931g.o \
 		  crypto/dso/dso_dl.o \
 		  crypto/dso/dso_dlfcn.o \
 		  crypto/dso/dso_err.o \
@@ -171,6 +180,9 @@ OBJS		= crypto/cryptlib.o \
 		  crypto/dh/dh_pmeth.o \
 		  crypto/dh/dh_prn.o \
 		  crypto/dh/dh_rfc5114.o \
+		  crypto/dh/dh_kdf.o \
+		  crypto/dh/dh_meth.o \
+		  crypto/dh/dh_rfc7919.o \
 		  crypto/buffer/buffer.o \
 		  crypto/buffer/buf_str.o \
 		  crypto/buffer/buf_err.o \
@@ -193,6 +205,10 @@ OBJS		= crypto/cryptlib.o \
 		  crypto/bio/bss_log.o \
 		  crypto/bio/bss_bio.o \
 		  crypto/bio/bss_dgram.o \
+		  crypto/bio/b_addr.o \
+		  crypto/bio/b_sock2.o \
+		  crypto/bio/bf_lbuf.o \
+		  crypto/bio/bio_meth.o \
 		  crypto/stack/stack.o \
 		  crypto/lhash/lhash.o \
 		  crypto/lhash/lh_stats.o \
@@ -201,6 +217,11 @@ OBJS		= crypto/cryptlib.o \
 		  crypto/rand/rand_lib.o \
 		  crypto/rand/rand_err.o \
 		  crypto/rand/rand_unix.o \
+		  crypto/rand/drbg_ctr.o \
+		  crypto/rand/drbg_lib.o \
+		  crypto/rand/rand_egd.o \
+		  crypto/rand/rand_vms.o \
+		  crypto/rand/rand_win.o \
 		  crypto/err/err.o \
 		  crypto/err/err_all.o \
 		  crypto/err/err_prn.o \
@@ -269,6 +290,10 @@ OBJS		= crypto/cryptlib.o \
 		  crypto/evp/e_aes_cbc_hmac_sha1.o \
 		  crypto/evp/e_aes_cbc_hmac_sha256.o \
 		  crypto/evp/e_rc4_hmac_md5.o \
+		  crypto/evp/cmeth_lib.o \
+		  crypto/evp/m_md5_sha1.o \
+		  crypto/evp/m_sha3.o \
+		  crypto/evp/pbe_scrypt.o \
 		  crypto/asn1/a_object.o \
 		  crypto/asn1/a_bitstr.o \
 		  crypto/asn1/a_utctm.o \
@@ -346,6 +371,10 @@ OBJS		= crypto/cryptlib.o \
 		  crypto/asn1/p5_pbev2.o \
 		  crypto/asn1/p8_pkey.o \
 		  crypto/asn1/asn_moid.o \
+		  crypto/asn1/asn1_item_list.o \
+		  crypto/asn1/asn_mstbl.o \
+		  crypto/asn1/tasn_scn.o \
+		  crypto/asn1/x_int64.o \
 		  crypto/pem/pem_sign.o \
 		  crypto/pem/pem_seal.o \
 		  crypto/pem/pem_info.o \
@@ -380,6 +409,20 @@ OBJS		= crypto/cryptlib.o \
 		  crypto/x509/x509_txt.o \
 		  crypto/x509/x509_trs.o \
 		  crypto/x509/x509_vpm.o \
+		  crypto/x509/by_dir.o \
+		  crypto/x509/by_file.o \
+		  crypto/x509/t_crl.o \
+		  crypto/x509/t_req.o \
+		  crypto/x509/t_x509.o \
+		  crypto/x509/x509_meth.o \
+		  crypto/x509/x_attrib.o \
+		  crypto/x509/x_crl.o \
+		  crypto/x509/x_exten.o \
+		  crypto/x509/x_name.o \
+		  crypto/x509/x_pubkey.o \
+		  crypto/x509/x_req.o \
+		  crypto/x509/x_x509.o \
+		  crypto/x509/x_x509a.o \
 		  crypto/x509v3/v3_bcons.o \
 		  crypto/x509v3/v3_bitst.o \
 		  crypto/x509v3/v3_conf.o \
@@ -416,6 +459,10 @@ OBJS		= crypto/cryptlib.o \
 		  crypto/x509v3/pcy_lib.o \
 		  crypto/x509v3/v3_asid.o \
 		  crypto/x509v3/v3_addr.o \
+		  crypto/x509v3/v3_admis. o\
+		  crypto/x509v3/v3_tlsf.o \
+		  crypto/x509v3/v3_admis.o \
+		  crypto/x509v3/v3_tlsf.o \
 		  crypto/conf/conf_err.o \
 		  crypto/conf/conf_lib.o \
 		  crypto/conf/conf_api.o \
@@ -423,6 +470,7 @@ OBJS		= crypto/cryptlib.o \
 		  crypto/conf/conf_mod.o \
 		  crypto/conf/conf_mall.o \
 		  crypto/conf/conf_sap.o \
+		  crypto/conf/conf_ssl.o \
 		  crypto/txt_db/txt_db.o \
 		  crypto/pkcs7/pk7_asn1.o \
 		  crypto/pkcs7/pk7_lib.o \
@@ -447,6 +495,7 @@ OBJS		= crypto/cryptlib.o \
 		  crypto/pkcs12/pk12err.o \
 		  crypto/pkcs12/p12_p8d.o \
 		  crypto/pkcs12/p12_p8e.o \
+		  crypto/pkcs12/p12_sbag.o \
 		  crypto/comp/comp_lib.o \
 		  crypto/comp/comp_err.o \
 		  crypto/comp/c_rle.o \
@@ -460,6 +509,7 @@ OBJS		= crypto/cryptlib.o \
 		  crypto/ocsp/ocsp_prn.o \
 		  crypto/ocsp/ocsp_vfy.o \
 		  crypto/ocsp/ocsp_err.o \
+		  crypto/ocsp/v3_ocsp.o \
 		  crypto/cmac/cmac.o \
 		  crypto/cmac/cm_ameth.o \
 		  crypto/cmac/cm_pmeth.o \
