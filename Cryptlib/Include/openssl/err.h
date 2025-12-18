@@ -245,7 +245,7 @@ void ERR_print_errors_fp(FILE *fp);
 # endif
 void ERR_print_errors(BIO *bp);
 void ERR_add_error_data(int num, ...);
-void ERR_add_error_vdata(int num, va_list args);
+void ERR_add_error_vdata(int num, ms_va_list args);
 int ERR_load_strings(int lib, ERR_STRING_DATA *str);
 int ERR_load_strings_const(const ERR_STRING_DATA *str);
 int ERR_unload_strings(int lib, ERR_STRING_DATA *str);

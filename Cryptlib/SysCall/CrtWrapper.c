@@ -2,18 +2,12 @@
   C Run-Time Libraries (CRT) Wrapper Implementation for OpenSSL-based
   Cryptographic Library.
 
-Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
-This program and the accompanying materials
-are licensed and made available under the terms and conditions of the BSD License
-which accompanies this distribution.  The full text of the license may be found at
-http://opensource.org/licenses/bsd-license.php
-
-THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
-WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+Copyright (c) 2009 - 2017, Intel Corporation. All rights reserved.<BR>
+SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
-#include <OpenSslSupport.h>
+#include <CrtLibSupport.h>
 
 int errno = 0;
 
@@ -84,14 +78,14 @@ QuickSortWorker (
     }
   }
   //
-  // Swap pivot to it's final position (NextSwapLocaiton)
+  // Swap pivot to its final position (NextSwapLocation)
   //
   CopyMem (Buffer, Pivot, ElementSize);
   CopyMem (Pivot, (UINT8 *)BufferToSort + (NextSwapLocation * ElementSize), ElementSize);
   CopyMem ((UINT8 *)BufferToSort + (NextSwapLocation * ElementSize), Buffer, ElementSize);
 
   //
-  // Now recurse on 2 paritial lists.  Neither of these will have the 'pivot' element.
+  // Now recurse on 2 partial lists.  Neither of these will have the 'pivot' element.
   // IE list is sorted left half, pivot element, sorted right half...
   //
   QuickSortWorker (
@@ -121,6 +115,50 @@ QuickSortWorker (
 // -- String Manipulation Routines --
 //
 
+char *strchr(const char *str, int ch)
+{
+  return ScanMem8 (str, AsciiStrSize (str), (UINT8)ch);
+}
+
+/* Scan a string for the last occurrence of a character */
+char *strrchr (const char *str, int c)
+{
+  char * save;
+
+  for (save = NULL; ; ++str) {
+    if (*str == c) {
+      save = (char *)str;
+    }
+    if (*str == 0) {
+      return (save);
+    }
+  }
+}
+
+/* Compare first n bytes of string s1 with string s2, ignoring case */
+int strncasecmp (const char *s1, const char *s2, size_t n)
+{
+  int Val;
+
+  ASSERT(s1 != NULL);
+  ASSERT(s2 != NULL);
+
+  if (n != 0) {
+    do {
+      Val = tolower(*s1) - tolower(*s2);
+      if (Val != 0) {
+        return Val;
+      }
+      ++s1;
+      ++s2;
+      if (*s1 == '\0') {
+        break;
+      }
+    } while (--n != 0);
+  }
+  return 0;
+}
+
 /* Read formatted data from a string */
 int sscanf (const char *buffer, const char *format, ...)
 {
@@ -129,6 +167,123 @@ int sscanf (const char *buffer, const char *format, ...)
   // no direct functionality logic dependency in present UEFI cases.
   //
   return 0;
+}
+
+/* Maps errnum to an error-message string */
+char * strerror (int errnum)
+{
+  return NULL;
+}
+
+/* Computes the length of the maximum initial segment of the string pointed to by s1
+   which consists entirely of characters from the string pointed to by s2. */
+size_t strspn (const char *s1 , const char *s2)
+{
+  UINT8   Map[32];
+  UINT32  Index;
+  size_t  Count;
+
+  for (Index = 0; Index < 32; Index++) {
+    Map[Index] = 0;
+  }
+
+  while (*s2) {
+    Map[*s2 >> 3] |= (1 << (*s2 & 7));
+    s2++;
+  }
+
+  if (*s1) {
+    Count = 0;
+    while (Map[*s1 >> 3] & (1 << (*s1 & 7))) {
+      Count++;
+      s1++;
+    }
+
+    return Count;
+  }
+
+  return 0;
+}
+
+/* Computes the length of the maximum initial segment of the string pointed to by s1
+   which consists entirely of characters not from the string pointed to by s2. */
+size_t strcspn (const char *s1, const char *s2)
+{
+  UINT8  Map[32];
+  UINT32 Index;
+  size_t Count;
+
+  for (Index = 0; Index < 32; Index++) {
+    Map[Index] = 0;
+  }
+
+  while (*s2) {
+    Map[*s2 >> 3] |= (1 << (*s2 & 7));
+    s2++;
+  }
+
+  Map[0] |= 1;
+
+  Count   = 0;
+  while (!(Map[*s1 >> 3] & (1 << (*s1 & 7)))) {
+    Count ++;
+    s1++;
+  }
+
+  return Count;
+}
+
+//
+// -- Character Classification Routines --
+//
+
+/* Determines if a particular character is a decimal-digit character */
+int isdigit (int c)
+{
+  //
+  // <digit> ::= [0-9]
+  //
+  return (('0' <= (c)) && ((c) <= '9'));
+}
+
+/* Determine if an integer represents character that is a hex digit */
+int isxdigit (int c)
+{
+  //
+  // <hexdigit> ::= [0-9] | [a-f] | [A-F]
+  //
+  return ((('0' <= (c)) && ((c) <= '9')) ||
+          (('a' <= (c)) && ((c) <= 'f')) ||
+          (('A' <= (c)) && ((c) <= 'F')));
+}
+
+/* Determines if a particular character represents a space character */
+int isspace (int c)
+{
+  //
+  // <space> ::= [ ]
+  //
+  return ((c) == ' ');
+}
+
+/* Determine if a particular character is an alphanumeric character */
+int isalnum (int c)
+{
+  //
+  // <alnum> ::= [0-9] | [a-z] | [A-Z]
+  //
+  return ((('0' <= (c)) && ((c) <= '9')) ||
+          (('a' <= (c)) && ((c) <= 'z')) ||
+          (('A' <= (c)) && ((c) <= 'Z')));
+}
+
+/* Determines if a particular character is in upper case */
+int isupper (int c)
+{
+  //
+  // <uppercase letter> := [A-Z]
+  //
+  return (('A' <= (c)) && ((c) <= 'Z'));
 }
 
 //
@@ -153,6 +308,15 @@ unsigned long strtoul (const char *nptr, char **endptr, int base)
   // no direct functionality logic dependency in present UEFI cases.
   //
   return 0;
+}
+
+/* Convert character to lowercase */
+int tolower (int c)
+{
+  if (('A' <= (c)) && ((c) <= 'Z')) {
+    return (c - ('A' - 'a'));
+  }
+  return (c);
 }
 
 //
@@ -196,6 +360,19 @@ char *getenv (const char *varname)
   return NULL;
 }
 
+/* Get a value from the current environment */
+char *secure_getenv (const char *varname)
+{
+  //
+  // Null secure_getenv() function implementation to satisfy the linker, since
+  // there is no direct functionality logic dependency in present UEFI cases.
+  //
+  // From the secure_getenv() manual: 'just like getenv() except that it
+  // returns NULL in cases where "secure execution" is required'.
+  //
+  return NULL;
+}
+
 //
 // -- Stream I/O Routines --
 //
@@ -216,17 +393,12 @@ size_t fwrite (const void *buffer, size_t size, size_t count, FILE *stream)
 //  -- Dummy OpenSSL Support Routines --
 //
 
-void *UI_OpenSSL(void)
-{
-  return NULL;
-}
-
-int X509_load_cert_file (VOID *ctx, const char *file, int type)
+int BIO_printf (void *bio, const char *format, ...)
 {
   return 0;
 }
 
-int X509_load_crl_file (VOID *ctx, const char *file, int type)
+int BIO_snprintf(char *buf, size_t n, const char *format, ...)
 {
   return 0;
 }
@@ -254,7 +426,6 @@ VOID
   VOID
   ) __attribute__((__noreturn__));
 
-
 STATIC
 VOID
 EFIAPI
@@ -264,8 +435,7 @@ NopFunction (
 {
 }
 
-
-void exit (int e)
+void abort (void)
 {
   NoReturnFuncPtr NoReturnFunc;
 
@@ -276,8 +446,9 @@ void exit (int e)
 
 #else
 
-void exit (int e)
+void abort (void)
 {
+  // Do nothing
 }
 
 #endif

@@ -1,44 +1,56 @@
 /** @file
   HMAC-SHA256 Wrapper Implementation which does not provide real capabilities.
 
-Copyright (c) 2016, Intel Corporation. All rights reserved.<BR>
-This program and the accompanying materials
-are licensed and made available under the terms and conditions of the BSD License
-which accompanies this distribution.  The full text of the license may be found at
-http://opensource.org/licenses/bsd-license.php
-
-THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
-WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+Copyright (c) 2016 - 2020, Intel Corporation. All rights reserved.<BR>
+SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
 #include "InternalCryptLib.h"
 
 /**
-  Retrieves the size, in bytes, of the context buffer required for HMAC-SHA256 operations.
+  Allocates and initializes one HMAC_CTX context for subsequent HMAC-SHA256 use.
 
-  Return zero to indicate this interface is not supported.
+  Return NULL to indicate this interface is not supported.
 
-  @retval  0   This interface is not supported.
+  @return  NULL  This interface is not supported..
 
 **/
-UINTN
+VOID *
 EFIAPI
-HmacSha256GetContextSize (
+HmacSha256New (
   VOID
   )
 {
   ASSERT (FALSE);
-  return 0;
+  return NULL;
 }
 
 /**
-  Initializes user-supplied memory pointed by HmacSha256Context as HMAC-SHA256 context for
-  subsequent use.
+  Release the specified HMAC_CTX context.
+
+  This function will do nothing.
+
+  @param[in]  HmacSha256Ctx  Pointer to the HMAC_CTX context to be released.
+
+**/
+VOID
+EFIAPI
+HmacSha256Free (
+  IN  VOID  *HmacSha256Ctx
+  )
+{
+  ASSERT (FALSE);
+  return;
+}
+
+/**
+  Set user-supplied key for subsequent use. It must be done before any
+  calling to HmacSha256Update().
 
   Return FALSE to indicate this interface is not supported.
 
-  @param[out]  HmacSha256Context  Pointer to HMAC-SHA256 context being initialized.
+  @param[out]  HmacSha256Context  Pointer to HMAC-SHA256 context.
   @param[in]   Key                Pointer to the user-supplied key.
   @param[in]   KeySize            Key size in bytes.
 
@@ -47,7 +59,7 @@ HmacSha256GetContextSize (
 **/
 BOOLEAN
 EFIAPI
-HmacSha256Init (
+HmacSha256SetKey (
   OUT  VOID         *HmacSha256Context,
   IN   CONST UINT8  *Key,
   IN   UINTN        KeySize

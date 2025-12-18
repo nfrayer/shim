@@ -142,7 +142,7 @@ IMPLEMENT_ASN1_FUNCTIONS (TS_TST_INFO)
   @param[in]  Asn1Time         Pointer to the ASN.1 GeneralizedTime to be converted.
   @param[out] SigningTime      Return the corresponding EFI Time.
 
-  @retval  TRUE   The time convertion succeeds.
+  @retval  TRUE   The time conversion succeeds.
   @retval  FALSE  Invalid parameters.
 
 **/
@@ -239,7 +239,7 @@ CheckTSTInfo (
   TS_MESSAGE_IMPRINT  *Imprint;
   X509_ALGOR          *HashAlgo;
   CONST EVP_MD        *Md;
-  EVP_MD_CTX          MdCtx;
+  EVP_MD_CTX          *MdCtx;
   UINTN               MdSize;
   UINT8               *HashedMsg;
 
@@ -249,6 +249,7 @@ CheckTSTInfo (
   Status    = FALSE;
   HashAlgo  = NULL;
   HashedMsg = NULL;
+  MdCtx     = NULL;
 
   //
   // -- Check version number of Timestamp:
@@ -285,11 +286,17 @@ CheckTSTInfo (
   if (HashedMsg == NULL) {
     goto _Exit;
   }
-  EVP_DigestInit (&MdCtx, Md);
-  EVP_DigestUpdate (&MdCtx, TimestampedData, DataSize);
-  EVP_DigestFinal (&MdCtx, HashedMsg, NULL);
+  MdCtx = EVP_MD_CTX_new ();
+  if (MdCtx == NULL) {
+    goto _Exit;
+  }
+  if ((EVP_DigestInit_ex (MdCtx, Md, NULL) != 1) ||
+      (EVP_DigestUpdate (MdCtx, TimestampedData, DataSize) != 1) ||
+      (EVP_DigestFinal (MdCtx, HashedMsg, NULL) != 1)) {
+    goto _Exit;
+  }
   if ((MdSize == (UINTN)ASN1_STRING_length (Imprint->HashedMessage)) &&
-      (CompareMem (HashedMsg, ASN1_STRING_data (Imprint->HashedMessage), MdSize) != 0)) {
+      (CompareMem (HashedMsg, ASN1_STRING_get0_data (Imprint->HashedMessage), MdSize) != 0)) {
     goto _Exit;
   }
 
@@ -315,6 +322,7 @@ CheckTSTInfo (
 
 _Exit:
   X509_ALGOR_free (HashAlgo);
+  EVP_MD_CTX_free (MdCtx);
   if (HashedMsg != NULL) {
     FreePool (HashedMsg);
   }

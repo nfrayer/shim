@@ -215,7 +215,8 @@ IsEkuInCertificate (
       goto Exit;
     }
 
-    if (OBJ_cmp(Asn1InCert, Asn1ToFind) == 0) {
+    if (Asn1InCert->length == Asn1ToFind->length &&
+        CompareMem (Asn1InCert->data, Asn1ToFind->data, Asn1InCert->length) == 0) {
       //
       // Found Eku in certificate.
       //

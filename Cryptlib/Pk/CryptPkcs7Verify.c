@@ -48,7 +48,9 @@ CHAR8 mOidCodeSign[] = "1.3.6.1.5.5.7.3.3";
 
 static int cert_in_store(X509 *cert, X509_STORE_CTX *ctx)
 {
+  X509_OBJECT test;
   X509_OBJECT obj;
+  test.type = X509_LU_X509;
   obj.type = X509_LU_X509;
   obj.data.x509 = cert;
   return X509_OBJECT_retrieve_match(ctx->ctx->objs, &obj) != NULL;

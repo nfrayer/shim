@@ -22,8 +22,9 @@
 #include <openssl/x509.h>
 #include <openssl/x509v3.h>
 #include <openssl/rsa.h>
-#include <openssl/dso.h>
-
+//#include <openssl/dso.h>
+#include <internal/dso.h>
+#include <openssl/objects.h>
 #include <Library/BaseCryptLib.h>
 
 #define OID_EKU_MODSIGN "1.3.6.1.4.1.2312.16.1.2"

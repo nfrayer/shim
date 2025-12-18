@@ -17,7 +17,8 @@
 #include <openssl/x509.h>
 #include <openssl/x509v3.h>
 #include <openssl/rsa.h>
-#include <openssl/dso.h>
+//#include <openssl/dso.h>
+#include <internal/dso.h>
 
 #include <Library/BaseCryptLib.h>
 
